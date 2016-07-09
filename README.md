@@ -14,6 +14,19 @@ GameStuff - This folder contains all of my Game Programming files.
           Project_1.py - a simple application that implements a basic controller and gravity. Also was
                          able to paint a picture as the player model/figure instead of a ball, as in 
                          the Java application.
+          Physics_Engine.py - A physics Engine I made for the ADAM video game. Allows for creation of solid blocks,
+                             collision detection, and physical entity creation
+          Player_Assets.py - A player class for the ADAM video game that myself and another programmer worked on. 
+          
+Systems Programming - A folder dedicated to all of my Systems Programming work. Will contain all x86 / C / C++ based files.
+                      Will mark files that were completed in school, as well as those completed in my own free time.
+                      
+            C:
+                 htoi.c - a simple C function that allows a string of text to be entered in the format "0x######" / "0X######"
+                 or "########". The String will be converted to its proper hexidecimal number.
+                 
+                 Rudimentary Syntax Parser - This file contains code that will check other programming files for simple syntax errors
+                 (unbalanced paranthesis, missing semi-colons, unbalanced single / double quotes, etc.)
 
 
 
