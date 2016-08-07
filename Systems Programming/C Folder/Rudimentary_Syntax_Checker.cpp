@@ -13,7 +13,7 @@ const int MAX_LENGTH = 100;
 
 // FUNCTION PROTOTYPES
 int checkSyntax(char []);
-int  checkLines(FILE * fptr, int &);
+int checkLines(FILE * fptr, int &);
 bool paranError(int);					// error ID: 1
 bool semicolonError(int);				// error ID: 2
 bool braceError(int);					// error ID: 3
@@ -40,7 +40,7 @@ int main()
 //------------------------------------------------------------------------------------------
 int checkSyntax(char line[])
 {
-	// bool for syntax correctness, int for type of snytax error
+	// int for type of snytax error
 	int  syntaxErrorType = -1;
 
 	// Ints representing how many of each possible symbol is on a line
@@ -91,7 +91,7 @@ int checkLines(FILE * fptr, int &lineNum)
 {
 	// variables for line, the error type, and line number
 	char line[MAX_LENGTH];
-	int  error			= 0;
+	int  error          = 0;
 	int  tempLineNumber = 0;
 	
 	// while we have not reached end of file
@@ -116,32 +116,7 @@ int checkLines(FILE * fptr, int &lineNum)
 	lineNum = tempLineNumber; 
 
 	if (error)
-	{
-		switch (error)
-		{
-			case 1:
-				return 1;
-				break;
-			case 2:
-				return 2;
-				break;
-			case 3:
-				return 3;
-				break;
-			case 4:
-				return 4;
-				break;
-			case 5:
-				return 5;
-				break;
-			case 6:
-				return 6;
-				break;
-			case 7:
-				return 7;
-				break;
-		}
-	}
+		return error;
 	else
 	{
 		lineNum = -1;
