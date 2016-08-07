@@ -12,21 +12,20 @@
 const int MAX_LENGTH = 100;
 
 // FUNCTION PROTOTYPES
-void checkSyntax(FILE *, char[]);
-int  checkLines(char[]);
-int  lineOfError(int);
-bool paranError(int);
-bool semicolonError(int);
-bool braceError(int);
-bool commentError(int);
-bool bracketError(int);
-bool singleQuoteError(int);
-bool doubleQuoteError(int);
+int checkSyntax(char []);
+int  checkLines(FILE * fptr, int &);
+bool paranError(int);					// error ID: 1
+bool semicolonError(int);				// error ID: 2
+bool braceError(int);					// error ID: 3
+bool commentError(int);					// error ID: 4
+bool bracketError(int);					// error ID: 5
+bool singleQuoteError(int);				// error ID: 6
+bool doubleQuoteError(int);				// error ID: 7
 
 int main()
 {
 	// The file to open
-	FILE * fptr = fopen("C:\\Users\Matt Fry\Desktop\TempFile.txt", "w");
+	FILE * fptr = fopen("C:\\Users\\\"Matt Fry\"\\Desktop\\TempFile.txt", "w");
 }
 
 //------------------------------------------------------------------------------------------
@@ -37,13 +36,11 @@ int main()
 ///				   Examples include: unbalanced parantheses, braces, missing semicolons etc.
 ///
 /// @param[in] <fptr>  - pointer to the file to parse
-/// @param[in] <line>  - the current line of the file
-/// @return    <bool>  - bool determining if line is syntactically correct. True is yes, False if not.
+/// @return    <none> 
 //------------------------------------------------------------------------------------------
 int checkSyntax(char line[])
 {
 	// bool for syntax correctness, int for type of snytax error
-	bool isCorrect       = false;
 	int  syntaxErrorType = -1;
 
 	// Ints representing how many of each possible symbol is on a line
@@ -78,38 +75,81 @@ int checkSyntax(char line[])
 			numDoubleQ++;
 	}
 
-	return isCorrect;
+	return syntaxErrorType;
 }
 
 //------------------------------------------------------------------------------------------
 /// @Description - checkLines will check all lines of a file calling checkSyntax to determine 
 ///                a syntax eror. An int will be returned determiningg what line the error occured on.
 /// 
-/// @param[in] <fptr> - a pointer to the file we're checking
-/// @return    <bool> - bool determining if the lines in a file are syntactically correct.
-///						true = correct, false = not correct.
+/// @param[in] <fptr>	 - a pointer to the file we're checking
+/// @param[in] <lineNum> - The line where the error occurs
+/// @return    <bool>	 - bool determining if the lines in a file are syntactically correct.
+///						   true = correct, false = not correct.
 //------------------------------------------------------------------------------------------
-int checkLines(FILE * fptr)
+int checkLines(FILE * fptr, int &lineNum)
 {
+	// variables for line, the error type, and line number
 	char line[MAX_LENGTH];
-	int  error      = 0;
-	int  lineNumber = 0;
-
+	int  error			= 0;
+	int  tempLineNumber = 0;
+	
+	// while we have not reached end of file
 	while (!feof(fptr))
 	{
+		// get the current line and store it in line
 		if (fgets(line, MAX_LENGTH, fptr) != nullptr)
 		{
+			// determine if a syntax error occured
 			error = checkSyntax(line);
-		}
 
-		lineNumber++;
+			// increment line number of error only if an error occurs
+			if (error)
+				tempLineNumber++;
+		}
 	}
 
-	if (!error)
-		return true;
+	// close the file
+	fclose(fptr);
+
+	// store line
+	lineNum = tempLineNumber; 
+
+	if (error)
+	{
+		switch (error)
+		{
+			case 1:
+				return 1;
+				break;
+			case 2:
+				return 2;
+				break;
+			case 3:
+				return 3;
+				break;
+			case 4:
+				return 4;
+				break;
+			case 5:
+				return 5;
+				break;
+			case 6:
+				return 6;
+				break;
+			case 7:
+				return 7;
+				break;
+		}
+	}
 	else
-		return false;
+	{
+		lineNum = -1;
+		return 0;
+	}
+		
 }
+
 
 //------------------------------------------------------------------------------------------
 /// @Description -  The various 'Error' functions determine if the int passed % 2 == 0
