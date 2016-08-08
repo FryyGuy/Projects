@@ -12,8 +12,8 @@
 const int MAX_LENGTH = 100;
 
 // FUNCTION PROTOTYPES
-int checkSyntax(char []);
-int checkLines(FILE * fptr, int &);
+int  checkSyntax(char []);
+void checkLines(FILE * fptr, int [], int []);
 bool paranError(int);					// error ID: 1
 bool semicolonError(int);				// error ID: 2
 bool braceError(int);					// error ID: 3
@@ -80,14 +80,15 @@ int checkSyntax(char line[])
 
 //------------------------------------------------------------------------------------------
 /// @Description - checkLines will check all lines of a file calling checkSyntax to determine 
-///                a syntax eror. An int will be returned determiningg what line the error occured on.
+///                a syntax eror. Int arrays will be passed in to store the error that occurred
+///				   as well as what line the error occurred at. 
 /// 
-/// @param[in] <fptr>	 - a pointer to the file we're checking
-/// @param[in] <lineNum> - The line where the error occurs
-/// @return    <bool>	 - bool determining if the lines in a file are syntactically correct.
-///						   true = correct, false = not correct.
+/// @param[in] <fptr>	      - a pointer to the file we're checking
+/// @param[in] <lineOfError>  - Array that stores what lines errors occurred at
+/// @param[in] <errorForLine> - Array that holds the error that occurred at line i
+/// @return    <none>
 //------------------------------------------------------------------------------------------
-int checkLines(FILE * fptr, int &lineNum)
+void checkLines(FILE * fptr, int * lineOfError, int * errorForLine)
 {
 	// variables for line, the error type, and line number
 	char line[MAX_LENGTH];
@@ -104,25 +105,18 @@ int checkLines(FILE * fptr, int &lineNum)
 			error = checkSyntax(line);
 
 			// increment line number of error only if an error occurs
+			// store the error for the line, and the line the error occurred on.
 			if (error)
+			{
 				tempLineNumber++;
+				lineOfError[tempLineNumber] = tempLineNumber;
+				errorForLine[tempLineNumber] = error;
+			}
 		}
 	}
 
 	// close the file
-	fclose(fptr);
-
-	// store line
-	lineNum = tempLineNumber; 
-
-	if (error)
-		return error;
-	else
-	{
-		lineNum = -1;
-		return 0;
-	}
-		
+	fclose(fptr);		
 }
 
 
