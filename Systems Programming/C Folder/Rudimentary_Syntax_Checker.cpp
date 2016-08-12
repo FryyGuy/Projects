@@ -11,9 +11,18 @@
 // number of max characters per line
 const int MAX_LENGTH = 100;
 
+// ENUMS FOR ERROR TYPES
+const int PARANTHESES_ERR = 1;
+const int SEMICOLON_ERR   = 2;
+const int BRACE_ERR       = 3;
+const int COMMENT_ERR     = 4;
+const int BRACKET_ERR     = 5;
+const int SINGLE_Q_ERR    = 6;
+const int DOUBLE_Q_ERR    = 7;
+
 // FUNCTION PROTOTYPES
-int  checkSyntax(char []);
-void checkLines(FILE * fptr, int [], int []);
+int  checkSyntax(char[]);
+void checkLines(FILE * fptr, int[], int[]);
 bool paranError(int);					// error ID: 1
 bool semicolonError(int);				// error ID: 2
 bool braceError(int);					// error ID: 3
@@ -24,8 +33,20 @@ bool doubleQuoteError(int);				// error ID: 7
 
 int main()
 {
+	// int arrays for possible errors and the lines the occur on
+	int * linesOfError  = nullptr;
+	int * errorForLines = nullptr;
+	               
 	// The file to open
 	FILE * fptr = fopen("C:\\Users\\\"Matt Fry\"\\Desktop\\TempFile.txt", "w");
+
+	// check all lines for syntax errors
+	checkLines(fptr, linesOfError, errorForLines);
+
+	// delete all pointers
+	delete linesOfError;
+	delete errorForLines;
+	delete fptr;
 }
 
 //------------------------------------------------------------------------------------------
@@ -75,6 +96,21 @@ int checkSyntax(char line[])
 			numDoubleQ++;
 	}
 
+	if (paranError(numParan))
+		syntaxErrorType = PARANTHESES_ERR;
+	else if (semicolonError(numSemi))
+		syntaxErrorType = SEMICOLON_ERR;
+	else if (braceError(numBrace))
+		syntaxErrorType = BRACE_ERR;
+	else if (commentError(numComment))
+		syntaxErrorType = COMMENT_ERR;
+	else if (bracketError(numBracket))
+		syntaxErrorType = BRACKET_ERR;
+	else if (singleQuoteError(numSingleQ))
+		syntaxErrorType = SINGLE_Q_ERR;
+	else
+		syntaxErrorType = DOUBLE_Q_ERR;
+
 	return syntaxErrorType;
 }
 
@@ -92,9 +128,9 @@ void checkLines(FILE * fptr, int * lineOfError, int * errorForLine)
 {
 	// variables for line, the error type, and line number
 	char line[MAX_LENGTH];
-	int  error          = 0;
+	int  error = 0;
 	int  tempLineNumber = 0;
-	
+
 	// while we have not reached end of file
 	while (!feof(fptr))
 	{
@@ -116,7 +152,14 @@ void checkLines(FILE * fptr, int * lineOfError, int * errorForLine)
 	}
 
 	// close the file
-	fclose(fptr);		
+	fclose(fptr);
+
+	// print out all errors and their lines
+	for (int i = 0; i < LENGTH(lineOfError); i++)
+	{
+		printf("Error at line: %d", lineOfError[i]);
+		printf("Error Type: %d", errorForLine[i]);
+	}
 }
 
 
