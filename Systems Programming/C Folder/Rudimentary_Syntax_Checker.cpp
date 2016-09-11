@@ -4,6 +4,11 @@
 *	error occurred, as well as what line it occurred on
 */
 #include <stdio.h>
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
 
 // Macro for length of the array
 #define LENGTH(array) (sizeof(array) / sizeof(array[0]))
@@ -19,10 +24,11 @@ const int COMMENT_ERR     = 4;
 const int BRACKET_ERR     = 5;
 const int SINGLE_Q_ERR    = 6;
 const int DOUBLE_Q_ERR    = 7;
+const int NO_ERROR		  = 8;
 
 // FUNCTION PROTOTYPES
-int  checkSyntax(char[]);
-void checkLines(FILE * fptr, int[], int[]);
+int  checkSyntax(string);
+void checkLines(string, int[], int[]);
 bool paranError(int);					// error ID: 1
 bool semicolonError(int);				// error ID: 2
 bool braceError(int);					// error ID: 3
@@ -31,22 +37,46 @@ bool bracketError(int);					// error ID: 5
 bool singleQuoteError(int);				// error ID: 6
 bool doubleQuoteError(int);				// error ID: 7
 
+
+// Ints representing total symbols for each type
+int totalParan   = 0;
+int totalSemi    = 0;
+int totalComment = 0;
+int totalBrace   = 0;
+int totalBracket = 0;
+int totalSingleQ = 0;
+int totalDoubleQ = 0;
+
 int main()
 {
 	// int arrays for possible errors and the lines the occur on
-	int * linesOfError  = nullptr;
-	int * errorForLines = nullptr;
+	int linesOfError[MAX_LENGTH];
+	int errorForLines[MAX_LENGTH];
 	               
 	// The file to open
-	FILE * fptr = fopen("C:\\Users\\\"Matt Fry\"\\Desktop\\TempFile.txt", "w");
+	ifstream fptr;
+	fptr.open("TempFile.txt", ios_base::in);
 
-	// check all lines for syntax errors
-	checkLines(fptr, linesOfError, errorForLines);
+	//FILE * fptr = fopen("TempFile.txt", "r");
+	
+	if (fptr)
+	{
+		string line;
 
+		while (getline(fptr, line))
+		{
+			// check all lines for syntax errors
+			checkLines(line, linesOfError, errorForLines);
+		}
+	}
+
+	fptr.close();
+
+	cout << totalSemi << endl << endl;
+
+	system("pause");
+	
 	// delete all pointers
-	delete linesOfError;
-	delete errorForLines;
-	delete fptr;
 }
 
 //------------------------------------------------------------------------------------------
@@ -56,10 +86,10 @@ int main()
 ///				   return of 0 indicates line is syntactically correct
 ///				   Examples include: unbalanced parantheses, braces, missing semicolons etc.
 ///
-/// @param[in] <fptr>  - pointer to the file to parse
+/// @param[in] <line>  - The current line in the file 
 /// @return    <none> 
 //------------------------------------------------------------------------------------------
-int checkSyntax(char line[])
+int checkSyntax(string line)
 {
 	// int for type of snytax error
 	int  syntaxErrorType = -1;
@@ -72,44 +102,52 @@ int checkSyntax(char line[])
 	int numBracket = 0;
 	int numSingleQ = 0;
 	int numDoubleQ = 0;
-
+	
 	// loop over the line, and get a count of each symbol
-	for (int i = 0; i < LENGTH(line) - 1; i++)
+	for (int i = 0; i < line.length(); i++)
 	{
+		// check to see if the line begins with '#' if so skip it
+		if (line.at(i) == '#')
+			continue;
+
 		// check to see if line[i] is '(', ')', ';', '[', ']', ' ' ', ' " '
-		if (line[i] == '(' || line[i] == ')')
-			numParan++;
-		else if (line[i] == ';')
-			numSemi++;
-		else if (line[i] == '\\' && i++ != (LENGTH(line) - 1))
+		if (line.at(i) == '(' || line.at(i) == ')')
+			totalParan++;
+		else if (line.at(i) == ';')
+			totalSemi++;
+		else if (line.at(i) == '\\' && i++ != line.length() - 1)
 		{
-			if (line[i++] == '\\')
-				numComment++;
+			if (line.at(i++) == '\\')
+				totalComment++;
 		}
-		else if (line[i] == '}' || line[i] == '{')
-			numBrace++;
-		else if (line[i] == '[' || line[i] == ']')
-			numBracket++;
-		else if (line[i] == '\'')
-			numSingleQ++;
-		else if (line[i] == '\"')
-			numDoubleQ++;
+		else if (line.at(i) == '}' || line.at(i) == '{')
+			totalBrace++;
+		else if (line.at(i) == '[' || line.at(i) == ']')
+			totalBracket++;
+		else if (line.at(i) == '\'')
+			totalSingleQ++;
+		else if (line.at(i) == '\"')
+			totalDoubleQ++;
 	}
 
-	if (paranError(numParan))
+	//update totals
+	if (paranError(totalParan))
 		syntaxErrorType = PARANTHESES_ERR;
-	else if (semicolonError(numSemi))
+	else if (semicolonError(totalSemi))
 		syntaxErrorType = SEMICOLON_ERR;
-	else if (braceError(numBrace))
+	else if (braceError(totalBrace))
 		syntaxErrorType = BRACE_ERR;
-	else if (commentError(numComment))
+	else if (commentError(totalComment))
 		syntaxErrorType = COMMENT_ERR;
-	else if (bracketError(numBracket))
+	else if (bracketError(totalBracket))
 		syntaxErrorType = BRACKET_ERR;
-	else if (singleQuoteError(numSingleQ))
+	else if (singleQuoteError(totalSingleQ))
 		syntaxErrorType = SINGLE_Q_ERR;
-	else
+	else if (doubleQuoteError(totalDoubleQ))
 		syntaxErrorType = DOUBLE_Q_ERR;
+	else
+		syntaxErrorType = NO_ERROR;
+
 
 	return syntaxErrorType;
 }
@@ -119,46 +157,41 @@ int checkSyntax(char line[])
 ///                a syntax eror. Int arrays will be passed in to store the error that occurred
 ///				   as well as what line the error occurred at. 
 /// 
-/// @param[in] <fptr>	      - a pointer to the file we're checking
+/// @param[in] <line>	      - C string pertaining to the current line in the file
 /// @param[in] <lineOfError>  - Array that stores what lines errors occurred at
 /// @param[in] <errorForLine> - Array that holds the error that occurred at line i
 /// @return    <none>
 //------------------------------------------------------------------------------------------
-void checkLines(FILE * fptr, int * lineOfError, int * errorForLine)
+void checkLines(string line, int * lineOfError, int * errorForLine)
 {
 	// variables for line, the error type, and line number
-	char line[MAX_LENGTH];
 	int  error = 0;
 	int  tempLineNumber = 0;
 
-	// while we have not reached end of file
-	while (!feof(fptr))
-	{
-		// get the current line and store it in line
-		if (fgets(line, MAX_LENGTH, fptr) != nullptr)
-		{
-			// determine if a syntax error occured
-			error = checkSyntax(line);
+	string lines[MAX_LENGTH];
 
-			// increment line number of error only if an error occurs
-			// store the error for the line, and the line the error occurred on.
-			if (error)
-			{
-				tempLineNumber++;
-				lineOfError[tempLineNumber] = tempLineNumber;
-				errorForLine[tempLineNumber] = error;
-			}
+	// get the current line and store it in line
+	if (!line.empty())
+	{
+		// determine if a syntax error occured
+		error = checkSyntax(line);
+
+		// increment line number of error only if an error occurs
+		// store the error for the line, and the line the error occurred on.
+		if (error)
+		{
+			lineOfError[tempLineNumber] = tempLineNumber;
+			errorForLine[tempLineNumber] = error;
+			lines[tempLineNumber] = line;
+			tempLineNumber++;
 		}
 	}
-
-	// close the file
-	fclose(fptr);
 
 	// print out all errors and their lines
 	for (int i = 0; i < LENGTH(lineOfError); i++)
 	{
-		printf("Error at line: %d", lineOfError[i]);
-		printf("Error Type: %d", errorForLine[i]);
+		printf("Error at line %d: %s\n", lineOfError[i], lines[i].c_str());
+		printf("Error Type: %d\n\n", errorForLine[i]);
 	}
 }
 
