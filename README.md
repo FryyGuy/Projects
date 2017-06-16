@@ -27,6 +27,15 @@ Systems Programming - A folder dedicated to all of my Systems Programming work. 
                  
                  Rudimentary Syntax Parser - This file contains code that will check other programming files for simple syntax errors
                  (unbalanced paranthesis, missing semi-colons, unbalanced single / double quotes, etc.)
+                 
+                 ForFun - A folder dedicated to fun side projects that I embark on from time to time
+                 
+                        BinaryTree.h - header file for the BinaryTree Implementation file
+                        
+                        BinaryTree.cpp - Implementation file for the BinaryTree. Currently supports int data types. 
+                        
+                        Goal is to port it to a Template-Based BinaryTree that accepts any data. Will use BinaryTree for other
+                        stuff later. 
 
 
 
