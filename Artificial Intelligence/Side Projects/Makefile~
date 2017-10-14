@@ -1,0 +1,17 @@
+SRC=GameState.cpp
+OBJS=GameState.o
+
+all: test
+
+test: test.cpp GameState.h
+	g++ -c test.cpp -o test
+
+game: game-state.o
+	A
+	g++ -o game $(OBJS)
+
+game-state.o: GameState.cpp
+	g++ -c $(SRC) 
+
+clean:
+	rm *.o
