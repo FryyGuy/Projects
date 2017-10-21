@@ -1,5 +1,6 @@
 #!/usr/bin/python
 from Coordinates import Coordinates
+from brick import Brick
 
 UP = 0
 DOWN = 1
@@ -23,37 +24,69 @@ class Move(object):
     # ========================================
     def apply_move(self, state):
         coord_list = self.get_piece_coords(state, self.piece)
+        brick = Brick()
+        brick.set_height_width(coord_list)
 
-        for coord in coord_list:
-            x = coord.x
-            y = coord.y
+        valid = brick.check_move_valid(state, self)
 
-            if state.board[x][y] == self.piece\
-            or state.board[x][y] == 0:
-
-                if self.direction == UP:
+        if valid == True:
+            if self.direction == UP:
+                for coord in coord_list:
+                    x = coord.x
+                    y = coord.y
                     if state.board[x - 1][y] == 0:
                         state.swap_board_elems(x, y, x - 1, y)
                     elif state.board[x - 1][y] == -1:
                         state.replace_zero(x, y, x - 1, y)
 
-                if self.direction == DOWN:
+            if self.direction == DOWN:
+                for coord in coord_list:
+                    x = coord.x
+                    y = coord.y
                     if state.board[x + 1][y] == 0:
                         state.swap_board_elems(x, y, x + 1, y)
                     elif state.board[x + 1][y] == -1:
                         state.replace_zero(x, y, x + 1, y)
 
-                if self.direction == LEFT:
+            if self.direction == LEFT:
+                for coord in coord_list:
+                    x = coord.x
+                    y = coord.y
                     if state.board[x][y - 1] == 0:
                         state.swap_board_elems(x, y, x, y - 1)
                     elif state.board[x][y - 1] == -1:
                         state.replace_zero(x, y, x, y - 1)
 
-                if self.direction == RIGHT:
+            if self.direction == RIGHT:
+                for coord in reversed(coord_list):
+                    x = coord.x
+                    y = coord.y
                     if state.board[x][y + 1] == 0:
                         state.swap_board_elems(x, y, x, y + 1)
                     elif state.board[x][y + 1] == -1:
                         state.replace_zero(x, y, x, y + 1)
+
+    def check_move_valid(self, state):
+        coord_list = self.get_piece_coords(state, self.piece)
+
+        valid = True
+        for coord in coord_list:
+            x = coord.x
+            y = coord.y
+
+            if self.direction == UP:
+                if state.board[x - 1][y] != 0:
+                    valid = False
+            if self.direction == DOWN:
+                if state.board[x + 1][y] != 0:
+                    valid = False
+            if self.direction == LEFT:
+                if state.board[x][y - 1] != 0\
+                and state.board[x][y - 1] != coord.value:
+                    valid = False
+            if self.direction == RIGHT:
+                if state.board[x][y + 1] != 0:
+                    valid = False
 
     # ========================================
     # @ Description - applies move and clones state
@@ -71,6 +104,19 @@ class Move(object):
     # @ param[in] <piece> - the piece to look for
     # @ return <list<Coordinates>>
     # ========================================
+    def get_piece_brick(self, state, piece):
+        coord_list = []
+
+        for i in range(0, state.rows):
+            for j in range(0, state.cols):
+                if state.board[i][j] == piece:
+                    coord_list.append(Coordinates(piece, i, j))
+
+        brick = Brick()
+        brick.set_height_width(coord_list)
+
+        return brick
+
     def get_piece_coords(self, state, piece):
         coord_list = []
 
@@ -103,20 +149,24 @@ class Move(object):
     # ========================================
     def get_piece_moves(self, state, piece):
         piece_coords = self.get_piece_coords(state, piece)
-        zero_coords = self.get_zero_coords(state)
 
         move_list = []
 
         for p_coords in piece_coords:
-            for z_coords in zero_coords:
-                if p_coords.up_free(z_coords, state):
-                    move_list.append(Move(p_coords.value, UP, p_coords))
-                elif p_coords.down_free(z_coords, state):
-                    move_list.append(Move(p_coords.value, DOWN, p_coords))
-                elif p_coords.left_free(z_coords, state):
-                    move_list.append(Move(p_coords.value, LEFT, p_coords))
-                elif p_coords.right_free(z_coords, state):
-                    move_list.append(Move(p_coords.value, RIGHT, p_coords))
+            if p_coords.up_free(state):
+                move_list.append(Move(p_coords.value, UP, p_coords))
+            elif p_coords.down_free(state):
+                move_list.append(Move(p_coords.value, DOWN, p_coords))
+            elif p_coords.left_free(state):
+                move_list.append(Move(p_coords.value, LEFT, p_coords))
+            elif p_coords.right_free(state):
+                move_list.append(Move(p_coords.value, RIGHT, p_coords))
+
+        brick = self.get_piece_brick(state, piece)
+
+        for move in move_list:
+            if brick.check_move_valid(state, move) == False:
+                move_list.remove(move)
 
         return move_list
 

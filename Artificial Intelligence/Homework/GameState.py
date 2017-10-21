@@ -48,7 +48,7 @@ class GameState(object):
         # get rid of annoying shit
         for arr in content:
             for char in arr:
-                if char == '\r\n':
+                if char == '\r' or char == '\n':
                     arr.remove(char)
 
         # get rows and cols
@@ -60,7 +60,7 @@ class GameState(object):
 
         # and we got a board
         for line in content:
-            self.board.append(map(int, line))
+            self.board.append(list(map(int, line)))
 
     # ========================================
     # @ Description - swaps two indexes
@@ -108,6 +108,7 @@ class GameState(object):
     # @ return <bool> - true if puzzle is solved
     # ========================================
     def random_walk(self, n):
+        solved = -1
         temp_move = Move(-1, -1, None)
         initial_moves = temp_move.get_all_moves(self)
 
@@ -142,7 +143,7 @@ class GameState(object):
         else:
             for i in range(0, self.rows):
                 for j in range(0, self.cols):
-                    if rhs[row][col] != self.board[row][col]:
+                    if rhs.board[i][j] != self.board[i][j]:
                         return False
         return True
 

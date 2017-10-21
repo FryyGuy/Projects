@@ -1,7 +1,27 @@
 #!/usr/bin/python
+import os
+import sys
+import random
+
 from GameState import GameState
 from Move import Move
 from Coordinates import Coordinates
+
+user_level = ""
+if sys.argv < 2 or sys.argv > 2:
+    print("ERROR: Invalid arguments passed.")
+    print("Expected: ./test LEVEL_FILE.txt\n")
+    print("Using default level0.txt")
+else:
+    user_level = sys.argv[1]
+
+level_files = [filename for filename in os.listdir('.') if "level" in filename]
+if user_level == "":
+    user_level = [level for level in level_files if level.find("0") >= 0][0]
+
+print user_level
+
+random_level = random.choice(level_files)
 
 game = GameState()
 test_game = GameState()
@@ -11,12 +31,12 @@ move = Move(-1, -1, None)
 print("\n")
 print("Loading Level...")
 print("Done!")
-game.load_state("level0.txt")
+game.load_state(user_level)
 game.display_state()
 
 print("\n")
 print("Comparing differing Levels...")
-test_game.load_state("level1.txt")
+test_game.load_state(random_level)
 test_game.display_state()
 
 if game.equals(test_game):
@@ -53,7 +73,7 @@ game.display_state()
 
 print("\n")
 print("Testing Moves...")
-game.load_state("level0.txt")
+game.load_state(user_level)
 
 # do enough moves to get a winning board and check again for solved
 move.piece = 2
@@ -116,11 +136,11 @@ else:
 
 print("\n")
 print("Testing Move Generation...")
-new_state.load_state("level1.txt")
+new_state.load_state(random_level)
 new_state.display_state()
 
 move.piece = 3
-move_list = move.get_piece_moves(new_state, 3)
+move_list = move.get_piece_moves(new_state, move.piece)
 
 print("Possible moves for piece " + str(move.piece) + " ...\n")
 if move_list is None:
