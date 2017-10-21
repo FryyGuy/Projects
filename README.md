@@ -45,8 +45,3 @@ Artificial Intelligence - A folder for all my A.I / M.L related work.
             Side Projects: The side projects I'll do related to school work. This folder contains stuff related to 
             low-level re-writes of code I've already developed and other stuff I wanted to do that sounded neat or cool. 
 
-
-
-                            
-          
->>>>>>> 226f105344f12a5c46bcbeaf97c7e90864129623
