@@ -48,7 +48,7 @@ class GameState(object):
         # get rid of annoying shit
         for arr in content:
             for char in arr:
-                if char == '\r' or char == '\n':
+                if char == '\r' or char == '\n' or char == '\r\n':
                     arr.remove(char)
 
         # get rows and cols

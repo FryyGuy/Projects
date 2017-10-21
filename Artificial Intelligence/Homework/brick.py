@@ -36,21 +36,37 @@ class Brick(object):
         if move.direction == 0:
             for coord in self.width:
                 valid = coord.up_free(state)
+                if valid == False:
+                    break
             for coord in self.height:
                 valid = coord.up_free(state)
+                if valid == False:
+                    break
         if move.direction == 1:
             for coord in self.width:
                 valid = coord.down_free(state)
+                if valid == False:
+                    break
             for coord in self.height:
                 valid = coord.down_free(state)
+                if valid == False:
+                    break
         if move.direction == 2:
             for coord in self.width:
                 valid = coord.left_free(state)
+                if valid == False:
+                    break
             for coord in self.height:
                 valid = coord.left_free(state)
+                if valid == False:
+                    break
         if move.direction == 3:
             for coord in self.width:
                 valid = coord.right_free(state)
+                if valid == False:
+                    break
             for coord in self.height:
                 valid = coord.right_free(state)
+                if valid == False:
+                    break
         return valid
