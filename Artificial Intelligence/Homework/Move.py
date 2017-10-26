@@ -12,7 +12,7 @@ class Move(object):
     # ========================================
     # @ Description - Movement object representation
     # ========================================
-    def __init__(self, piece, direction, coords):
+    def __init__(self, piece=-1, direction=-1, coords=None):
         self.piece = piece
         self.direction = direction
         self.coords = coords
@@ -57,6 +57,9 @@ class Move(object):
                     elif state.board[x][y - 1] == -1:
                         state.replace_zero(x, y, x, y - 1)
 
+            # Have to reverse direction for right, as coordinates 
+            # are naturally ordered from left to right. 
+            # swapping right does not follow this behavior
             if self.direction == RIGHT:
                 for coord in reversed(coord_list):
                     x = coord.x

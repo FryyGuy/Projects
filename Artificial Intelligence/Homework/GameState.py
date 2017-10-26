@@ -109,8 +109,8 @@ class GameState(object):
     # ========================================
     def random_walk(self, n):
         solved = -1
-        temp_move = Move(-1, -1, None)
-        initial_moves = temp_move.get_all_moves(self)
+
+        initial_moves = self.get_all_moves()
 
         for i in range(0, n):
             solved = self.puzzle_solved()
@@ -128,7 +128,7 @@ class GameState(object):
                 print("\n")
 
                 self.normalize()
-                initial_moves = temp_move.get_all_moves(self)
+                initial_moves = self.get_all_moves()
 
         return solved
 
@@ -184,6 +184,27 @@ class GameState(object):
                     pieces.append(self.board[i][j])
 
         return pieces
+
+    # ========================================
+    # @ Description - gets all available moves
+    # @ param[in] <state> - the state in question
+    # @ return <list<Move>>
+    # ========================================
+    def get_all_moves(self):
+        pieces = self.get_all_pieces()
+        all_move_list = []
+
+        for piece in pieces:
+            piece_move_list= Move()
+            piece_move_list = piece_move_list.get_piece_moves(self, piece)
+
+            if piece_move_list is None:    
+                all_move_list.append(str(piece) + " has no moves")
+            else:
+                for move in piece_move_list:
+                    all_move_list.append(move)
+
+        return all_move_list
 
     # ========================================
     # @ Description - displays a state
