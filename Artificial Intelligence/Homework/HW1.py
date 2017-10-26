@@ -7,6 +7,9 @@ from GameState import GameState
 from Move import Move
 from Coordinates import Coordinates
 
+from searching import BreadthFirstSearch
+from searching import DepthFirstSearch
+
 user_level = ""
 n_walks = 0
 if len(sys.argv) < 3:
@@ -23,8 +26,10 @@ if user_level == "":
 
 random_level = random.choice(level_files)
 
-game = GameState()
-test_game = GameState()
+game_start = GameState()
 
-game.load_state(user_level)
-game.random_walk(int(n_walks))
+game_start.load_state(user_level)
+
+moves = BreadthFirstSearch(game_start)
+
+#game_start.display_state()

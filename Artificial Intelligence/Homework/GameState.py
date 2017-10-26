@@ -195,7 +195,7 @@ class GameState(object):
         all_move_list = []
 
         for piece in pieces:
-            piece_move_list= Move()
+            piece_move_list = Move()
             piece_move_list = piece_move_list.get_piece_moves(self, piece)
 
             if piece_move_list is None:    
