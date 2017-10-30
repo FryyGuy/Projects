@@ -3,12 +3,13 @@ import os
 import sys
 import random
 
-from GameState import GameState
+from Gamestate import GameState
 from Move import Move
 from Coordinates import Coordinates
 
 from searching import BreadthFirstSearch
 from searching import DepthFirstSearch
+from searching import Node
 
 user_level = ""
 n_walks = 0
@@ -30,6 +31,13 @@ game_start = GameState()
 
 game_start.load_state(user_level)
 
-moves = BreadthFirstSearch(game_start)
-
-#game_start.display_state()
+node = Node(game_start, None, None)
+#children = node.get_children()
+#for child in children:
+#    print(str(child))
+#moves = game_start.get_all_moves()
+#for m in moves:
+#    print(m.string())
+path = BreadthFirstSearch(game_start)
+for p in path:
+    print(str(p.string()))

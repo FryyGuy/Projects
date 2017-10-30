@@ -61,11 +61,11 @@ class Brick(object):
                 if valid == False:
                     break
         if move.direction == 3:
-            for coord in self.width:
+            for coord in reversed(self.width):
                 valid = coord.right_free(state)
                 if valid == False:
                     break
-            for coord in self.height:
+            for coord in reversed(self.height):
                 valid = coord.right_free(state)
                 if valid == False:
                     break

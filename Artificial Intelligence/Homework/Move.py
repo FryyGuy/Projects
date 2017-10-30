@@ -158,11 +158,14 @@ class Move(object):
         for p_coords in piece_coords:
             if p_coords.up_free(state):
                 move_list.append(Move(p_coords.value, UP, p_coords))
-            elif p_coords.down_free(state):
+
+            if p_coords.down_free(state):
                 move_list.append(Move(p_coords.value, DOWN, p_coords))
-            elif p_coords.left_free(state):
+
+            if p_coords.left_free(state):
                 move_list.append(Move(p_coords.value, LEFT, p_coords))
-            elif p_coords.right_free(state):
+
+            if p_coords.right_free(state):
                 move_list.append(Move(p_coords.value, RIGHT, p_coords))
 
         brick = self.get_piece_brick(state, piece)
@@ -197,11 +200,14 @@ class Move(object):
     # @ Description - prints out a move
     # ========================================
     def string(self):
+        string = None
         if self.direction == UP:
-            print("(" + str(self.piece) + ", up)")
+            string = "(" + str(self.piece) + ", up)"
         elif self.direction == DOWN:
-            print("(" + str(self.piece) + ", down)")
+            string = "(" + str(self.piece) + ", down)"
         elif self.direction == LEFT:
-            print("(" + str(self.piece) + ", left)")
+            string = "(" + str(self.piece) + ", left)"
         elif self.direction == RIGHT:
-            print("(" + str(self.piece) + ", right)")
+            string = "(" + str(self.piece) + ", right)"
+
+        return string

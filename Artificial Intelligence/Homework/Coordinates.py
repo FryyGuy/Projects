@@ -31,6 +31,8 @@ class Coordinates(object):
             return self.up_free(state, cx - 1, cy)
         elif board_elem == 0:
             return True
+        elif board_elem == -1 and self.value == 2:
+            return True
         else:
             return False
 
@@ -54,6 +56,8 @@ class Coordinates(object):
         if board_elem == self.value:
             return self.down_free(state, cx + 1, cy)
         elif board_elem == 0:
+            return True
+        elif board_elem == -1 and self.value == 2:
             return True
         else:
             return False
@@ -79,6 +83,8 @@ class Coordinates(object):
             return self.left_free(state, cx, cy - 1)
         elif board_elem == 0:
             return True
+        elif board_elem == -1 and self.value == 2:
+            return True
         else:
             return False
 
@@ -102,6 +108,8 @@ class Coordinates(object):
         if board_elem == self.value:
             return self.right_free(state, cx, cy + 1)
         elif board_elem == 0:
+            return True
+        elif board_elem == -1 and self.value == 2:
             return True
         else:
             return False
