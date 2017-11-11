@@ -134,7 +134,6 @@ def get_least_cost(states):
         if s.f < least.f or s.f <= least.f:
             least = s
             states.remove(s)
-            break
 
     return least
 
