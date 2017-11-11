@@ -1,5 +1,8 @@
 #!/usr/bin/python
+from math import fabs
 from Move import Move
+from brick import Brick
+import copy
 from random import randint
 
 GOAL = -1
@@ -21,10 +24,11 @@ class GameState(object):
     # @ Description - copy construtor
     # ========================================
     def copy(self):
-        state = GameState()
-        state.rows = self.rows
-        state.cols = self.cols
-        state.board = self.board
+        #state = GameState()
+        #state.rows = self.rows
+        #state.cols = self.cols
+        #state.board = self.board
+        state = copy.deepcopy(self)
 
         return state
 
@@ -43,24 +47,60 @@ class GameState(object):
             content = f.readlines()
 
         # parse
-        content = [line.split(',') for line in content]
-
-        # get rid of annoying shit
-        for arr in content:
-            for char in arr:
-                if char == '\r' or char == '\n' or char == '\r\n':
-                    arr.remove(char)
+        board_data = []
+        for line in content:
+            data = line.rstrip(",\r\n")
+            board_data.append(data.split(','))
 
         # get rows and cols
-        matrix_data = content[0]
+        matrix_data = board_data[0]
         self.cols = int(matrix_data[0])
         self.rows = int(matrix_data[1])
 
-        content.remove(matrix_data)
+        board_data.remove(matrix_data)
 
         # and we got a board
-        for line in content:
+        for line in board_data:
             self.board.append(list(map(int, line)))
+
+    # ========================================================
+    # @ Description - calculates manhattan distance to goal
+    #               from position of master brick
+    # @ return <integer> - the distance to goal from master
+    # ========================================================
+    def mhd(self):
+        x_goal = 0
+        y_goal = 0
+
+        move = Move()
+        tar_coords = move.get_piece_coords(self, 2)
+        dest_coords = move.get_piece_coords(self, -1)
+
+        x_tar = tar_coords[0].x
+        y_tar = tar_coords[0].y
+
+        if not dest_coords:
+            return 0
+        else:
+            x_goal = dest_coords[0].x
+            y_goal = dest_coords[0].y
+
+        x_diff = fabs(x_tar - x_goal)
+        y_diff = fabs(y_tar - y_goal)
+
+        return x_diff + y_diff
+
+    def manhattan_distance(self, node):
+        move = Move()
+
+        node_mhd = node.state.mhd()
+        self_mhd = self.mhd()
+
+        mhd_diff = fabs(self_mhd - node_mhd)
+
+        return mhd_diff
+
+
 
     # ========================================
     # @ Description - swaps two indexes
@@ -191,7 +231,7 @@ class GameState(object):
     # @ return <list<Move>>
     # ========================================
     def get_all_moves(self):
-        pieces = self.get_all_pieces()
+        pieces = list(set(self.get_all_pieces()))
         all_move_list = []
 
         for piece in pieces:

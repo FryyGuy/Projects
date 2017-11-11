@@ -18,6 +18,20 @@ class Brick(object):
         self.width = []
         self.coords = None
 
+    def get_piece_brick(self, state, piece):
+        coord_list = []
+
+        for i in range(0, state.rows):
+            for j in range(0, state.cols):
+                if state.board[i][j] == piece:
+                    coord_list.append(Coordinates(piece, i, j))
+
+        brick = Brick()
+        brick.coords = coord_list
+        brick.set_height_width(coord_list)
+
+        return brick
+
     def set_height_width(self, coords):
         xs = [c.x for c in coords]
         ys = [c.y for c in coords]
