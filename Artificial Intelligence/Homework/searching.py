@@ -1,7 +1,10 @@
 import collections
+import time
 
 from GameState import GameState
 from Move import Move
+
+MAX_END_TIME = time.time() * 60 * 10
 
 class Node(object):
 
@@ -98,7 +101,7 @@ def A_Star(state):
     open.append(initial_state)
     nodes = 0
 
-    while open is not None:
+    while open is not None and time.time() < MAX_END_TIME:
         cost_list = []
         q = get_least_cost(open, closed)
 
@@ -107,16 +110,18 @@ def A_Star(state):
         if q.state.puzzle_solved():
             return (reconstruct_path(q), nodes)
 
-        for o in open:
-            if q.state.equals(o.state):
-                closed.append(o.state)
-                open.remove(o)
-                continue
+        #for o in open:
+        #    if q.state.equals(o.state):
+        #        closed.append(o.state)
+        #        open.remove(o)
+        #        continue
 
-        print("PARENT\n")
-        q.state.display_state()
         nodes += 1
         moves = q.state.get_all_moves()
+
+        closed.append(q.state.board)
+
+        q.state.display_state()
        
         for move in moves:
             new_state = q.state.copy()
@@ -125,6 +130,12 @@ def A_Star(state):
 
             if child.state.board in closed:
                 continue
+            
+            for o in open:
+                if o.state.equals(child.state) and o.f < child.f:
+                    continue
+
+
             if child.state.puzzle_solved():
                 return (reconstruct_path(child), nodes + 1)
 
@@ -142,10 +153,10 @@ def get_least_cost(open, closed):
         return 0
     least = open[0]
     for s in open:
-        if s.f < least.f:
+        if s.f < least.f or s.f <= least.f:
             least = s
-            open.remove(s)
-            closed.append(s.state)
+    
+    open.remove(s)
 
     return least
 

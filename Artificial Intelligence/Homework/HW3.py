@@ -30,8 +30,6 @@ elif alg == "dfs":
 elif alg == "astar":
     selected_func = A_Star
 
-
-
 game_start = GameState()
 
 if user_level is not None:
@@ -41,11 +39,16 @@ if user_level is not None:
     search_info = selected_func(game_start)
     end_1 = time.time() - start_1
 
-    print("Solution:\n")
-    for m in search_info:
-        print(m.string())
-    print("A-Star Time for " + str(user_level) +  ": " + str(end_1))
-    #print("Number of Nodes visited: " + str(search_info[1]))
+    outfile = open("output-hw3.txt", "a")
+
+    outfile.write("A-Star Time for " + str(user_level) +  ": " + str(end_1) + "\n")
+    outfile.write("Number of Nodes visited: " + str(search_info[1]) + "\n")
+    outfile.write("Solution Length: " + str(len(search_info[0])) + "\n")
+    outfile.write("Solution:\n")
+    for m in search_info[0]:
+        outfile.write(m.string() + "\n")
+    outfile.write("\n")
+    outfile.close()
     sys.exit()
 else:
     for f in all_levels:
@@ -57,12 +60,17 @@ else:
 
         outfile = open("output-hw3.txt", "a")
 
-        outfile.write("Solution:\n")
-        for m in search_info[0]:
-            outfile.write(m.string())
-        outfile.write("A-Star Time for " + str(f) +  ": " + str(end_1) + "\n")
-        outfile.write("Number of Nodes visited: " + str(search_info[1]) + "\n")
-        outfile.write("Solution Length: " + str(len(search_info[0])) + "\n")
+        if search_info is None:
+            outfile.write("15 Minute TIMEOUT Occured.. No results for " + str(f))
+        else:
+            outfile.write("A-Star Time for " + str(f) +  ": " + str(end_1) + "\n")
+            outfile.write("Number of Nodes visited: " + str(search_info[1]) + "\n")
+            outfile.write("Solution Length: " + str(len(search_info[0])) + "\n")
+            outfile.write("Solution:\n")
+            for m in search_info[0]:
+                outfile.write(m.string())
+            outfile.write("\n")
+
         print("Done Level: " + str(f) + "\n")
 
 
