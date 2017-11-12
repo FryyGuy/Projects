@@ -47,40 +47,53 @@ class Brick(object):
 
     def check_move_valid(self, state, move):
         valid = True
+        valid_listing = []
         if move.direction == 0:
             for coord in self.width:
                 valid = coord.up_free(state)
-                if valid == False:
-                    break
+                valid_listing.append(valid)
             for coord in self.height:
                 valid = coord.up_free(state)
-                if valid == False:
-                    break
+                valid_listing.append(valid)
+
+            for v in valid_listing:
+                if v == False:
+                    valid = False
+
         if move.direction == 1:
-            for coord in self.width:
+            for coord in reversed(self.width):
                 valid = coord.down_free(state)
-                if valid == False:
-                    break
-            for coord in self.height:
+                valid_listing.append(valid)
+            for coord in reversed(self.height):
                 valid = coord.down_free(state)
-                if valid == False:
-                    break
+                valid_listing.append(valid)
+
+            for v in valid_listing:
+                if v == False:
+                    valid = False
+
         if move.direction == 2:
             for coord in self.width:
                 valid = coord.left_free(state)
-                if valid == False:
-                    break
+                valid_listing.append(valid)
             for coord in self.height:
                 valid = coord.left_free(state)
-                if valid == False:
-                    break
+                valid_listing.append(valid)
+
+            for v in valid_listing:
+                if v == False:
+                    valid = False
+
         if move.direction == 3:
             for coord in reversed(self.width):
                 valid = coord.right_free(state)
-                if valid == False:
-                    break
+                valid_listing.append(valid)
             for coord in reversed(self.height):
                 valid = coord.right_free(state)
-                if valid == False:
-                    break
+                valid_listing.append(valid)
+
+            for v in valid_listing:
+                if v == False:
+                    valid = False
+
         return valid

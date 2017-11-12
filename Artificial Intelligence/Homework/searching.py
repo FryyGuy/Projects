@@ -96,17 +96,26 @@ def A_Star(state):
 
     initial_state = Node(state, None, Move())
     open.append(initial_state)
+    nodes = 0
 
     while open is not None:
         cost_list = []
-        q = get_least_cost(open)
+        q = get_least_cost(open, closed)
 
         if q.state.board in closed:
             continue
         if q.state.puzzle_solved():
-            return reconstruct_path(q)
+            return (reconstruct_path(q), nodes)
 
-        closed.append(q.state.board)
+        for o in open:
+            if q.state.equals(o.state):
+                closed.append(o.state)
+                open.remove(o)
+                continue
+
+        print("PARENT\n")
+        q.state.display_state()
+        nodes += 1
         moves = q.state.get_all_moves()
        
         for move in moves:
@@ -117,23 +126,26 @@ def A_Star(state):
             if child.state.board in closed:
                 continue
             if child.state.puzzle_solved():
-                return reconstruct_path(child)
+                return (reconstruct_path(child), nodes + 1)
+
             child.g = q.g + 1
 
-            if child.state.board not in closed:
+            if child not in open:
                 open.append(child)
             else:
                 continue
+                
     return None
 
-def get_least_cost(states):
-    if states[0] is None or states is None:
+def get_least_cost(open, closed):
+    if open[0] is None or open is None:
         return 0
-    least = states[0]
-    for s in states:
-        if s.f < least.f or s.f <= least.f:
+    least = open[0]
+    for s in open:
+        if s.f < least.f:
             least = s
-            states.remove(s)
+            open.remove(s)
+            closed.append(s.state)
 
     return least
 

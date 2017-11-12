@@ -40,7 +40,7 @@ class Move(object):
                         state.replace_zero(x, y, x - 1, y)
 
             if self.direction == DOWN:
-                for coord in coord_list:
+                for coord in reversed(coord_list):
                     x = coord.x
                     y = coord.y
                     if state.board[x + 1][y] == 0:
