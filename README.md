@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> b378cdeb42e8aacfbe61d8de17778a618def7f71
 # Projects
 
 This is my project folder. All of my coding work will be stored in separate folders that you may view freely.
@@ -27,8 +31,28 @@ Systems Programming - A folder dedicated to all of my Systems Programming work. 
                  
                  Rudimentary Syntax Parser - This file contains code that will check other programming files for simple syntax errors
                  (unbalanced paranthesis, missing semi-colons, unbalanced single / double quotes, etc.)
+<<<<<<< HEAD
 
 
 
                             
           
+=======
+                 
+                 ForFun - A folder dedicated to fun side projects that I embark on from time to time
+                 
+                        BinaryTree.h - header file for the BinaryTree Implementation file
+                        
+                        BinaryTree.cpp - Implementation file for the BinaryTree. Currently supports int data types. 
+                        
+                        Goal is to port it to a Template-Based BinaryTree that accepts any data. Will use BinaryTree for other
+                        stuff later. 
+
+Artificial Intelligence - A folder for all my A.I / M.L related work. 
+            
+            Homework: Homework folder for school. Generally all stuff here is written in Python
+            
+            Side Projects: The side projects I'll do related to school work. This folder contains stuff related to 
+            low-level re-writes of code I've already developed and other stuff I wanted to do that sounded neat or cool. 
+
+>>>>>>> b378cdeb42e8aacfbe61d8de17778a618def7f71

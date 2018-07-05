@@ -1,0 +1,150 @@
+#include "GameState.h"
+
+#include <iostream>
+#include <stdexcept>
+#include <vector>
+#include <fstream>
+#include <string>
+#include <sstream>
+
+//============================================================
+/// @ Description - display_state displays the game board_data
+///					of the filename given
+///
+/// @ param[in] <filename> - the filename referencing the game
+/// @ return <void>
+//============================================================
+void GameState::display_state(char *filename)
+{
+	string line;
+	ifstream input(filename, ios::in);
+	input.exceptions(ifstream::eofbit | ifstream::failbit | ifstream::badbit);
+
+	try
+	{
+		input.open(filename);
+		while (getline(input, line))
+			cout << line << endl;
+	}
+	catch (ios_base::failure &e)
+	{
+		cerr << "ERROR: " << strerror(errno) << endl;
+	}
+	catch (exception const &e)
+	{
+		cout << "ERROR WHILE OPENING: " << e.what() << endl;
+	}
+
+	input.close();
+}
+
+//============================================================
+/// @ Description - load_state loads the game state from file
+///
+/// @ param[in] <filename> - the file to load from
+/// @ return <void>
+//============================================================
+void GameState::load_state(char *filename)
+{
+	deque<char> board_data;
+	parse_csv(board_data, filename);
+	
+	// first and second characters are the matrix dimensions
+	this->rows = board_data.front();
+	board_data.pop_front();
+	
+	this->cols = board_data.front();
+	board_data.pop_front();
+	
+	if(!this->board)
+		create_board(board_data);
+}
+
+//============================================================
+/// @ Description - creates the baord for the game
+///
+/// @ param[in] <board> - the game board to be allocated
+/// @ return <void>
+//============================================================
+void GameState::create_board(deque<char> board_data)
+{
+	int row = 0, col = 0, i = 0;
+	int total = rows * cols;
+
+	board = new int *[rows];
+	for(int i = 0; i < rows; i++)
+		board[i] = new int[cols];
+
+	while(i < total)
+	{
+		if(i % cols == 0)
+		{
+			row++;
+			col = 0;
+		}
+		else
+		{
+			board[row][col++] = board_data.front();
+			board_data.pop_front();
+		}
+	}
+}
+
+//============================================================
+/// @ Description - parses the game board from the file
+///
+/// @ param[in] <board> - the csv to parse
+/// @ return <void>
+//============================================================
+void GameState::parse_csv(deque<char> board_data, char *filename)
+{
+	string line;
+	ifstream input(filename);
+
+	vector<string> temp_board_data;
+
+	// For practical purposes, assume file to be CSV
+	// Have to parse out data first
+	while(getline(input, line))
+	{
+		stringstream line_stream(line);
+		string cell;
+		
+		while(getline(line_stream, cell, ','))
+			temp_board_data.push_back(cell);
+	}
+
+	// for(int i = 0; i < temp_board_data.size(); i++)
+	// 	cout << temp_board_data.at(i);
+	// 	// for(int j = 0; j < temp_board_data.at(i); j++)
+	// 		// board_data.push_back(temp_board_data.at(i).at(j));
+}
+
+//============================================================
+//============================================================
+void GameState::normalize(GameState &state)
+{
+	
+}
+
+//============================================================
+//============================================================
+bool GameState::operator ==(GameState &state)
+{
+	return false;
+}
+
+//============================================================
+//============================================================
+bool GameState::puzzle_solved(GameState &state)
+{
+	return false;
+}
+
+//============================================================
+//============================================================
+void GameState::random_walk(GameState &state, int)
+{
+	
+}
+
